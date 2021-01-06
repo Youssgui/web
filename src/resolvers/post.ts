@@ -1,7 +1,6 @@
 import { Post } from "../entities/Post"
 import { MyContext } from "src/types"
-import {Resolver , Query, Ctx, Arg, Int, Mutation} from "type-graphql"
-import { title } from "process";
+import {Resolver , Query, Ctx, Arg, Mutation} from "type-graphql"
 
 @Resolver() //the qay graphql works is you need to create a class and decorate it with this thing
 
