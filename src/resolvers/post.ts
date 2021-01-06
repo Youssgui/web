@@ -60,12 +60,12 @@ export class PostResolver{ //here we can add functions that are either query or 
      @Arg("id") id: number,
      @Ctx() {em}: MyContext
  ): Promise<boolean>{
-    //  try{
+     try{ //dont really need this.. it always returns true since we calling delete on a nonexisted id doesnt throw an error
       await em.nativeDelete(Post, {id});
-    //  }
-    //  catch{
-        //  return false;
-    //  }
+     }
+     catch{
+         return false;
+     }
     
      return true; 
 
