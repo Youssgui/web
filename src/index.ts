@@ -5,7 +5,7 @@
 // main().catch((err)=>{
 // console.error(err);
 // })
-
+import "reflect-metadata"
 import { MikroORM } from "@mikro-orm/core";
 import microConfig from "./mikro-orm.config";
 // import { Post } from "./entities/Post";
@@ -14,6 +14,7 @@ import express from 'express';
 import {ApolloServer} from 'apollo-server-express';
 import {buildSchema} from 'type-graphql';
 import { HelloResolver } from "./resolvers/hello";
+import { PostResolver } from "./resolvers/post";
 
 
 const main = async () =>{
@@ -22,18 +23,20 @@ const main = async () =>{
     await orm.getMigrator().up();
 
 //    const post = orm.em.create(Post , {title: "first post"}); // not actually poutting a post
-//    await orm.em.persistAndFlush(post); //we add to table. 
-//    await orm.em.nativeInsert(Post, {title: 'first post'})
+//    await orm.em.persistAndFlush(post); //we add to table. /this is our first entry in the database, the em object. we plan to access
+//this entry through graphql using resolvers. we sucess
+
     //   const posts = await orm.em.find(Post, {});
     //   console.log(posts);
 
       const app = express(); //setting up express app
       const apolloServer = new ApolloServer({ //here we create a graphql endpoint
         schema: await  buildSchema({// here we pass  our options 
-          resolvers: [HelloResolver],  //resolvers are repsonsible for populating the data for a single field in schema
+          resolvers: [HelloResolver, PostResolver],  //resolvers are repsonsible for populating the data for a single field in schema, place here all resolvers
           //so the resolver is a simple schema, and our apollo server uses that schema
-          validate: false,
+          validate: false, //something annoying disabled 
         }), //we use await wwhen our function returns a promise
+        context : () => ({ em: orm.em }) //special object that access all these resolvers. we need the em object from orm 
       });
 
       apolloServer.applyMiddleware({app}); //this commands creates a graphql endpoint for us on express
