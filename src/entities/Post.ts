@@ -1,7 +1,7 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { Field, ObjectType } from "type-graphql";
 
-@ObjectType()
+@ObjectType() //this decorator is necessary for using this entity class as a type post
 @Entity()
 export class Post {
         //property is creatinga  db column
