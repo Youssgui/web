@@ -15,12 +15,13 @@ import {ApolloServer} from 'apollo-server-express';
 import {buildSchema} from 'type-graphql';
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
+import { UserResolver } from "./resolvers/user";
 
 
 const main = async () =>{
 
     const orm = await MikroORM.init(microConfig);
-    await orm.getMigrator().up();
+    await orm.getMigrator().up(); //this command runs the migration when our server restarts. it does not rerun old migrations, mikro orm creates a table in postgresql that keeps track of which migrations it has or it has not run
 
 //    const post = orm.em.create(Post , {title: "first post"}); // not actually poutting a post
 //    await orm.em.persistAndFlush(post); //we add to table. /this is our first entry in the database, the em object. we plan to access
@@ -32,7 +33,7 @@ const main = async () =>{
       const app = express(); //setting up express app
       const apolloServer = new ApolloServer({ //here we create a graphql endpoint
         schema: await  buildSchema({// here we pass  our options 
-          resolvers: [HelloResolver, PostResolver],  //resolvers are repsonsible for populating the data for a single field in schema, place here all resolvers
+          resolvers: [HelloResolver, PostResolver, UserResolver],  //resolvers are repsonsible for populating the data for a single field in schema, place here all resolvers
           //so the resolver is a simple schema, and our apollo server uses that schema
           validate: false, //something annoying disabled 
         }), //we use await wwhen our function returns a promise
