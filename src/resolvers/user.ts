@@ -116,7 +116,7 @@ export class UserResolver{ //here we can add functions that are either query or 
           }
       }
 
-      req.session.userId  = user.id //works somehow?? you can apparenty store anything inside of session object
+      req.session.userId  = user.id // you can store anything inside of session object, thatas why userID works
       return {
           user
       }
