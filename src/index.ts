@@ -53,6 +53,7 @@ const main = async () =>{
             sameSite: 'lax', //crsf attack protection. cookies are a thing which keeps some information about the user on our side, used in say "display every x number of visits" 
             secure : __prod__ //means cookie only works in https 
           },
+          saveUninitialized: false, //this means it will not create a session by default
           secret: 'fjaulcjmuacmoialjfhgf', //this is how its gonna assign the cookie, will make into environment variable
           resave: false,
         })

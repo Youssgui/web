@@ -1,6 +1,6 @@
 import { User } from "../entities/User"
 import { MyContext } from "src/types"
-import {Resolver , Mutation, InputType, Field, Ctx, Arg, ObjectType} from "type-graphql"
+import {Resolver , Mutation, InputType, Field, Ctx, Arg, ObjectType, Query} from "type-graphql"
 import argon2 from 'argon2' //this is for our password hashing
 
 //the below decorator allows us to insert the class below as input instead of listing input one by one
@@ -32,6 +32,19 @@ class UserResponse{ // are going to create an error object that handles errors r
 
 @Resolver() 
 export class UserResolver{ //here we can add functions that are either query or mutation
+
+
+    @Query(() => User , {nullable : true})  //this query function queries from our database the first post with the id. with typegraphql this returns a post that could be null
+    async me(@Ctx() {req,em}: MyContext){
+
+       if(!req.session.userId){
+           return null;
+       }
+
+       const user = await em.findOne(User, {id:req.session.userId});
+       return user;
+    }
+
 
     @Mutation(() => UserResponse)
     async register(
@@ -81,7 +94,7 @@ export class UserResolver{ //here we can add functions that are either query or 
     @Mutation(() => UserResponse)
     async login(
         @Arg ('options') options : UsernamePasswordInput,
-        @Ctx() {em} : MyContext 
+        @Ctx() {em , req} : MyContext 
     ) : Promise<UserResponse>
      {
       //lookup user to see if we have the name
@@ -102,6 +115,8 @@ export class UserResolver{ //here we can add functions that are either query or 
             }]
           }
       }
+
+      req.session.userId  = user.id //works somehow?? you can apparenty store anything inside of session object
       return {
           user
       }
